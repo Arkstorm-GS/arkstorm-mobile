@@ -1,45 +1,40 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import React from 'react'
+import { Tabs } from 'expo-router'
+import { COLORS } from '@/constants/theme';
+import { BarChart2, MapPin, Clock, AlertTriangle, House, ClipboardCheck } from 'lucide-react-native';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+      screenOptions={({ route }) => ({
+        tabBarShowLabel: false,
         headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
+        tabBarActiveTintColor: COLORS.primary,
+        tabBarStyle: {
+          //position: 'absolute',
+          elevation: 0,
+          height: 60,
+          paddingTop: 8,
+          paddingBottom: 8,
+        },
+        tabBarIcon: ({ color, size }) => {
+          switch (route.name) {
+            case 'overview': return <House color={color} size={size} />;
+            case 'locations': return <MapPin color={color} size={size} />;
+            case 'duration': return <Clock color={color} size={size} />;
+            case 'damages': return <AlertTriangle color={color} size={size} />;
+            case 'recommendations': return <ClipboardCheck color={color} size={size} />;
+            default: return <BarChart2 color={color} size={size} />;
+          }
+        },
+      })}
+    >
+      <Tabs.Screen name="overview" options={{ title: 'Panorama' }} />
+      <Tabs.Screen name="locations" options={{ title: 'Locais' }} />
+      <Tabs.Screen name="duration" options={{ title: 'Duração' }} />
+      <Tabs.Screen name="damages" options={{ title: 'Prejuízos' }} />
+      <Tabs.Screen name="recommendations" options={{ title: 'Recomendações' }} />
     </Tabs>
   );
 }
